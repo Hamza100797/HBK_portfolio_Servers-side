@@ -35,6 +35,7 @@ app.use('/app/v1/users', userRouter);
 
 //......... connect MongoDB ......//
 const URL = `mongodb://hbk1007:pwEyszvisMv3gybq@ac-tgs72yn-shard-00-00.fpcmyzx.mongodb.net:27017,ac-tgs72yn-shard-00-01.fpcmyzx.mongodb.net:27017,ac-tgs72yn-shard-00-02.fpcmyzx.mongodb.net:27017/test?replicaSet=atlas-hv65yf-shard-0&ssl=true&authSource=admin`;
+//const URL = `mongodb+srv://hbk1007:pwEyszvisMv3gybq@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`
 mongoose.connect(URL, {
     useNewUrlParser: true,
     useUnifiedTopology: true
