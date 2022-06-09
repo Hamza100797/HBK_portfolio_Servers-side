@@ -6,7 +6,8 @@ const dotenv = require("dotenv")
 const constant = require('./Api/constants/messages')
 const bodyParser = require('body-parser');
 let cors = require("cors");
-const userRouter = require('./Api/routes/userAuth')
+const userRouter = require('./Api/routes/userAuth');
+
 dotenv.config()
 
 app.use(function (req, res, next) {
@@ -25,6 +26,10 @@ app.use(bodyParser.json());
 
 //.....BodyParser Middleware....//
 
+//cors 
+app.use(cors());
+app.use(cors({ origin: true, credentials: true }));
+
 
 //Routes
 app.use('/app/v1/health', (req, res) => {
@@ -34,12 +39,13 @@ app.use('/app/v1/users', userRouter);
 
 
 //......... connect MongoDB ......//
-//const URL = `mongodb://hbk1007:pwEyszvisMv3gybq@ac-tgs72yn-shard-00-00.fpcmyzx.mongodb.net:27017,ac-tgs72yn-shard-00-01.fpcmyzx.mongodb.net:27017,ac-tgs72yn-shard-00-02.fpcmyzx.mongodb.net:27017/test?replicaSet=atlas-hv65yf-shard-0&ssl=true&authSource=admin`;
-const URL = `mongodb+srv://hbk1007:pwEyszvisMv3gybq@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`
-//const URL = `mongodb+srv://hbk1007:pwEyszvisMv3gybq@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`
+
+const URL = `mongodb+srv://hbk1007:KLBC3cc2uVBTq6l0@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`
+
 mongoose.connect(URL, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+
 })
     .then(() => {
         console.log('MongoDB Connected…')
