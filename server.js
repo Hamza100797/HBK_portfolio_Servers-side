@@ -40,7 +40,7 @@ app.use('/app/v1/users', userRouter);
 
 //......... connect MongoDB ......//
 
-const URL = `mongodb+srv://hbk1007:KLBC3cc2uVBTq6l0@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`
+const URL = `mongodb+srv://hbk1007:ifO8AdIR4si0RjnH@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`
 
 mongoose.connect(URL, {
     useNewUrlParser: true,
