@@ -11,5 +11,15 @@ module.exports = Object.freeze({
     BAD_REQUEST: "Bad Request",
     ERROR_In_Registeration: "Error while Registration",
     NOT_REGISTER: "User is Not register",
-    REGISTER_USER: "User Register Successfully"
+    REGISTER_USER: "User Register Successfully",
+    SERVER_ERROR: "Error in Server",
+    CREATE_BLOG: "Blog Create Successfully",
+    SOMETHING_WENT_WRONG: "Something went wrong",
+    RETRIEVE_SUCCESS: "Retrieve successfully",
+    RETRIEVE_NOT_SUCCESS: "Not retrieve successfully",
+    NO_RECORD_FOUND: "No record found",
+    UPDATE_SUCCESS: "Update Successfully",
+    ERROR_UPDATE: "Error While updating",
+    DELETED_SUCCESS: "Record delete successfully",
+    COULD_NOT_DELETED: "Record not deleted"
 })

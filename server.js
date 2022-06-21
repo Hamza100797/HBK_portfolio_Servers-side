@@ -7,8 +7,15 @@ const constant = require('./Api/constants/messages')
 const bodyParser = require('body-parser');
 let cors = require("cors");
 const userRouter = require('./Api/routes/userAuth');
-
+const profileUser = require('./Api/routes/profile');
+const Blog = require('./Api/routes/blog')
 dotenv.config()
+const path = require('path');
+
+
+///... Upload Folder for Multer 
+app.use(express.static(path.join(__dirname + "/uploads")))
+
 
 app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Origin", "*"); // update to match the domain you will make the request from
@@ -36,7 +43,8 @@ app.use('/app/v1/health', (req, res) => {
     res.send('API OKAY!');
 });
 app.use('/app/v1/users', userRouter);
-
+app.use('/app/v1/profileUsers', profileUser);
+app.use('/app/v1/blog', Blog);
 
 //......... connect MongoDB ......//
 
