@@ -33,7 +33,6 @@ exports.getAll = async (req, res) => {
         })
     }
 }
-
 exports.getById = async (req, res) => {
     const id = req.params.id;
     Blog.findById(id)
@@ -76,7 +75,6 @@ exports.createNew = async (req, res) => {
         return res.status(500).json({ status: false, message: error.message });
     }
 }
-
 exports.update = async (req, res) => {
     try {
         if (!req.body) {

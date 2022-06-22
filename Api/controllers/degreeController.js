@@ -1,4 +1,5 @@
-
+const constants = require('../constants/messages');
+const Degree = require('../Models/degree')
 
 
 exports.getAllDegree = async (req, res) => {
