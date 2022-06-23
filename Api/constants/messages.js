@@ -21,5 +21,18 @@ module.exports = Object.freeze({
     UPDATE_SUCCESS: "Update Successfully",
     ERROR_UPDATE: "Error While updating",
     DELETED_SUCCESS: "Record delete successfully",
-    COULD_NOT_DELETED: "Record not deleted"
+    COULD_NOT_DELETED: "Record not deleted",
+    CREATE_CAREER_OBJ: "Career Objective create Successfully",
+    UPDATE_SUCCESS: "Career Objective Update successfully",
+    NOT_CREATE_CAREEROBJ: "Career Objective not Update successfully",
+    ERROR_CAREER_OBJ: "Error While Create New Career Obj",
+    RECORD_FOUND: "Record Found Successfully",
+    CREATE_SUCCESS: "New Degree added",
+    NOT_ADDED_SUCCESS: "Not Added successfully",
+    RECORD_DELETED: "Record Delete Successfully",
+    ADD_EXPERIENCE: "Experience added Successfully",
+    HASHING_PASSWORD: "Error While Hashing password",
+    PROFILE_ADDED: "Profile added successfully",
+    NOT_ADDED: "Error in adding Profile"
+
 })
