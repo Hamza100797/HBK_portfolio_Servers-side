@@ -1,5 +1,6 @@
 const constants = require("../constants/messages");
 const Degree = require("../Models/degree");
+const mongoose = require('mongoose');
 
 exports.getAllDegree = async (req, res) => {
     const degree = await Degree.find();
@@ -75,13 +76,13 @@ exports.createDegree = async (req, res) => {
     }
     try {
         const newDegree = new Degree({
-            _id: mongoose.Types.ObjectId,
+            _id: new mongoose.Types.ObjectId,
             degreeTitle: req.body.degreeTitle,
             dateTo: req.body.dateTo,
             dateFrom: req.body.dateFrom,
             details: req.body.details,
             isActive: req.body.isActive,
-        });
+        })
         newDegree
             .save()
             .then((data) => {

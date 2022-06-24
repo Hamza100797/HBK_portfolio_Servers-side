@@ -1,11 +1,12 @@
 const constants = require('../constants/messages');
 const Experience = require('../Models/experence')
-
+const mongoose = require('mongoose');
 
 
 exports.getAllRecord = async (req, res) => {
-    const Experience = await Experience.find()
+
     try {
+        const Experience = await Experience.find()
         if (Experience) {
             console.log("Records Find in DB");
             let totalRecord = await Experience.countDocuments({ isDeleted: false });
@@ -22,7 +23,7 @@ exports.getAllRecord = async (req, res) => {
             })
         }
         else {
-            return res.status().send({
+            return res.status(404).send({
                 status: false,
                 message: constants.RETRIEVE_NOT_SUCCESS,
                 totalRecord
@@ -58,17 +59,18 @@ exports.getRecordById = async (req, res) => {
 }
 exports.createRecord = async (req, res) => {
     try {
-        if (!!companyName || !dateTo || !dateFrom || !JobDescription) {
-            console.log("Required Fileds")
-            return res.status(305).send({
+        if (!req.body.companyName || !req.body.dateTo || !req.body.dateFrom || !req.body.JobDescription) {
+            console.log("Required Fields")
+            return res.status(300).send({
                 status: false,
-                message: Constant.REQUIREDFIELDS,
+                message: constants.REQUIREDFIELDS,
             })
         }
         else {
             const NewExperience = new Experience({
-                _id: mongoose.Types.ObjectId,
-                degreeTitle: req.body.degreeTitle,
+                _id: new mongoose.Types.ObjectId,
+                companyName: req.body.companyName,
+                JobDescription: req.body.JobDescription,
                 dateTo: req.body.dateTo,
                 dateFrom: req.body.dateFrom,
                 details: req.body.details,
@@ -77,21 +79,22 @@ exports.createRecord = async (req, res) => {
             NewExperience.save()
                 .then((data) => {
                     return res.status(201).send({
-                        status: false,
-                        message: constant.ADD_EXPERIENCE,
+                        status: true,
+                        message: constants.ADD_EXPERIENCE,
                         newExperience: data
                     })
                 }).catch((err) => {
                     return res.status(500).send({
                         status: false,
-                        message: constants.SERVER_ERROR
+                        message: constantss.SERVER_ERROR,
+                        message2: err.message
                     })
                 })
         }
     } catch (error) {
         return res.status(505).send({
             status: false,
-            message: constants.message
+            message: error.message
         })
     }
 }
@@ -101,9 +104,9 @@ exports.updateRecord = async (req, res) => {
     try {
         if (!companyName || !dateTo || !dateFrom || !JobDescription) {
             console.log('Something is missing');
-            return res.status().send({
+            return res.status(300).send({
                 status: false,
-                message: constants.REQUIREDFIELDS
+                message: constantss.REQUIREDFIELDS
             })
         }
         else {
@@ -112,10 +115,10 @@ exports.updateRecord = async (req, res) => {
                     if (!data) {
                         return res.status(404).send({
                             status: false,
-                            message: constants.NO_RECORD_FOUND
+                            message: constantss.NO_RECORD_FOUND
                         })
                     } else {
-                        return res.status().send({
+                        return res.status(201).send({
                             status: true,
                             message: constants.UPDATE_SUCCESS,
                             UpdatedRecord: data
@@ -148,16 +151,17 @@ exports.deleteRecord = async (req, res) => {
                     })
                 }
                 else {
-                    res.status().send({
+                    res.status(200).send({
                         status: true,
                         message: constants.RECORD_DELETED,
 
                     })
                 }
             }).catch((err) => {
-                return res.status().send({
+                return res.status(500).send({
                     status: false,
-                    message: constants.SERVER_ERROR
+                    message: constants.SERVER_ERROR,
+                    msg2: err.message
                 })
             })
     } catch (error) {

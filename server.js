@@ -8,7 +8,10 @@ const bodyParser = require('body-parser');
 let cors = require("cors");
 const userRouter = require('./Api/routes/userAuth');
 const profileUser = require('./Api/routes/profile');
-const Blog = require('./Api/routes/blog')
+const Blog = require('./Api/routes/blog');
+const CareerOBJ = require('./Api/routes/careerObjective');
+// const Degree = require('./Api/routes/degree')
+const Experience = require('./Api/routes/experince')
 dotenv.config()
 const path = require('path');
 
@@ -45,7 +48,9 @@ app.use('/app/v1/health', (req, res) => {
 app.use('/app/v1/users', userRouter);
 app.use('/app/v1/profileUsers', profileUser);
 app.use('/app/v1/blog', Blog);
-
+app.use('/app/v1/careerobjective', CareerOBJ);
+// app.use('/app/v1/degree', Degree);
+app.use('/app/v1/experience', Experience);
 //......... connect MongoDB ......//
 
 const URL = `mongodb+srv://hbk1007:ifO8AdIR4si0RjnH@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`

@@ -13,9 +13,9 @@ router.get('/get/:limit/:offset', ((req, res) => {
 router.post('/create', ((req, res) => {
     carrerObjController.createCareerObj(req, res)
 }))
-router.patch('/update', ((req, res => {
+router.patch('/update/:id', ((req, res) => {
     carrerObjController.updateCareerObj(req, res)
-})))
+}))
 
 
 

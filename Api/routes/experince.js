@@ -15,9 +15,9 @@ router.get('/get/:id', ((req, res) => {
 router.post('/create', ((req, res) => {
     experienceController.createRecord(req, res)
 }))
-router.patch('/update/:id', ((req, res => {
+router.patch('/update/:id', ((req, res) => {
     experienceController.updateRecord(req, res)
-})))
+}))
 router.delete('/delete/:id', ((req, res) => {
     experienceController.deleteRecord(req, res)
 }))

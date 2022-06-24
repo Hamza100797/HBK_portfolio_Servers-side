@@ -1,8 +1,10 @@
 const constants = require('../constants/messages')
 const Career_Obj = require('../Models/careerObjective')
+const mongoose = require('mongoose');
 
 exports.getCareerObj = async (req, res) => {
     const careerObj = await Career_Obj.find();
+    console.log(careerObj)
     try {
         if (careerObj) {
             let totalRecord = await Career_Obj.countDocuments({ isDeleted: false });
@@ -34,7 +36,7 @@ exports.getCareerObj = async (req, res) => {
 }
 exports.createCareerObj = async (req, res) => {
     if (!req.body.careerObjective) {
-        return res.status().send({
+        return res.status(300).send({
             status: false,
             message: constants.REQUIREDFIELDS
         })
@@ -54,7 +56,7 @@ exports.createCareerObj = async (req, res) => {
                 })
             }).catch(err => {
                 console.log(err)
-                return res.status.send(500).send({
+                return res.status(303).send(500).send({
                     status: false,
                     message: constants.NOT_CREATE_CAREEROBJ
                 })
@@ -62,7 +64,7 @@ exports.createCareerObj = async (req, res) => {
 
     } catch (error) {
         console.log(error)
-        return res.status().send({
+        return res.status(500).send({
             status: false,
             message: constants.ERROR_CAREER_OBJ,
             err: error.message
@@ -73,7 +75,7 @@ exports.createCareerObj = async (req, res) => {
 exports.updateCareerObj = async (req, res) => {
     try {
         if (!req.body) {
-            return res.status().send({
+            return res.status(500).send({
                 status: false,
                 message: constants.REQUIREDFIELDS
             })
@@ -91,7 +93,7 @@ exports.updateCareerObj = async (req, res) => {
                         })
                     }
                     else {
-                        return res.status().send({
+                        return res.status(201).send({
                             status: true,
                             message: constants.UPDATE_SUCCESS,
                             data: data
@@ -109,7 +111,7 @@ exports.updateCareerObj = async (req, res) => {
         }
     } catch (error) {
         console.log("Error From try-catch Block")
-        return res.status().send({
+        return res.status(500).send({
             status: false,
             message: constants.SERVER_ERROR,
             err: error.message
