@@ -10,8 +10,11 @@ const userRouter = require('./Api/routes/userAuth');
 const profileUser = require('./Api/routes/profile');
 const Blog = require('./Api/routes/blog');
 const CareerOBJ = require('./Api/routes/careerObjective');
-// const Degree = require('./Api/routes/degree')
+const degree = require('./Api/routes/degree')
 const Experience = require('./Api/routes/experince')
+const Portfolio = require('./Api/routes/portfilo')
+const Skills = require('./Api/routes/skills')
+const Service = require('./Api/routes/service')
 dotenv.config()
 const path = require('path');
 
@@ -49,8 +52,11 @@ app.use('/app/v1/users', userRouter);
 app.use('/app/v1/profileUsers', profileUser);
 app.use('/app/v1/blog', Blog);
 app.use('/app/v1/careerobjective', CareerOBJ);
-// app.use('/app/v1/degree', Degree);
+app.use('/app/v1/degree', degree);
 app.use('/app/v1/experience', Experience);
+app.use('/app/v1/portfolio', Portfolio);
+app.use('/app/v1/service', Service);
+app.use('/app/v1/skills', Skills);
 //......... connect MongoDB ......//
 
 const URL = `mongodb+srv://hbk1007:ifO8AdIR4si0RjnH@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`

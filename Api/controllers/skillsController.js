@@ -1,6 +1,6 @@
 const constants = require('../constants/messages');
 const Skill = require('../Models/addSkills');
-
+const mongoose = require('mongoose')
 exports.getAll = async (req, res) => {
     try {
         const totalRecord = await Skill.countDocuments({ isDeleted: false });
@@ -28,29 +28,26 @@ exports.getAll = async (req, res) => {
     }
 }
 exports.getById = async (req, res) => {
-    try {
-        const id = req.params.id
-        Skill.findById(id)
-            .then((data) => {
-                return res.status(200).send({
-                    status: true,
-                    message: constants.RECORD_FOUND,
-                    record: data
-
-                })
-            }).catch((err) => {
-                return res.status(404).send({
+    const id = req.params.id;
+    Skill.findById(id)
+        .then(data => {
+            if (!data)
+                res.status(404).send({
                     status: false,
-                    message: constants.NO_RECORD_FOUND,
-
-                })
-            })
-    } catch (error) {
-        return res.status(505).send({
-            status: false,
-            message: error.message
+                    message: constants.NOT_FOUND
+                });
+            else res.status(200).send({
+                status: true,
+                message: constants.RETRIEVE_SUCCESS,
+                data: data
+            });
         })
-    }
+        .catch(err => {
+            res.status(500).send({
+                status: false,
+                message: constants.RETRIEVE_NOT_SUCCESS
+            });
+        });
 }
 exports.createNew = async (req, res) => {
     if (
@@ -112,7 +109,7 @@ exports.update = async (req, res) => {
                 message: constants.REQUIREDFIELDS,
             });
         } else {
-            Skill.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+            Skill.findByIdAndUpdate(id, req.body, { useFindAndModify: true })
                 .then((data) => {
                     if (!data) {
                         return res.status(404).send({

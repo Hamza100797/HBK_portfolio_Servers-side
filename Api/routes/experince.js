@@ -3,7 +3,7 @@ const router = express.Router();
 const experienceController = require('../controllers/experienceController')
 
 router.get("/", function (req, res, next) {
-    res.send("respond with a resource Profile");
+    res.send("respond with a resource Experience");
 });
 
 router.get('/get/:limit/:offset', ((req, res) => {

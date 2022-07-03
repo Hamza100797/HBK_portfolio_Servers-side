@@ -6,7 +6,8 @@ const newServiceSchema = new mongoose.Schema({
     serviceTitle: { type: String, required: true },
     serviceDescription: { type: String, required: true },
     serviceIcon: { type: String, required: true },
-    isActive: { type: boolean, required: true, default: true },
+    isActive: { type: Boolean, required: true, default: true },
+
 },
     { timestamps: true, versionKey: false }
 );

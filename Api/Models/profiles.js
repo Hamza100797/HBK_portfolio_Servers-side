@@ -12,4 +12,4 @@ const userProfileSchema = new mongoose.Schema({
 },
     { timestamps: true, versionKey: false }
 );
-module.exports = mongoose.model('DegreeDetails', userProfileSchema)
+module.exports = mongoose.model('ProfileUsers', userProfileSchema)

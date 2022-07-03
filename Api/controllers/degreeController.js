@@ -1,14 +1,15 @@
 const constants = require("../constants/messages");
-const Degree = require("../Models/degree");
+const DegreeModel = require("../Models/degree");
 const mongoose = require('mongoose');
 
 exports.getAllDegree = async (req, res) => {
-    const degree = await Degree.find();
+    const degree = await DegreeModel.find().countDocuments({ isDeleted: true });
+    let totalRecord = await DegreeModel.countDocuments({ isDeleted: false });
     try {
-        if (degree) {
+        if (!degree == 0) {
             console.log("Records Find in DB");
-            let totalRecord = await Degree.countDocuments({ isDeleted: false });
-            let degreeRecord = await Degree.find({ isDeleted: false })
+
+            let degreeRecord = await DegreeModel.find({ isDeleted: false })
                 .sort({ _id: -1 })
                 .limit(parseInt(req.params.limit) || 10)
                 .skip(parseInt(req.params.offset) - 1)
@@ -20,7 +21,7 @@ exports.getAllDegree = async (req, res) => {
                 totalRecord,
             });
         } else {
-            return res.status().send({
+            return res.status(404).send({
                 status: false,
                 message: constants.NO_RECORD_FOUND,
                 totalRecord,
@@ -28,7 +29,7 @@ exports.getAllDegree = async (req, res) => {
         }
     } catch (error) {
         console.log("Error in try-catch block");
-        return res.status().send({
+        return res.status(500).send({
             status: false,
             message: error.message,
         });
@@ -36,26 +37,30 @@ exports.getAllDegree = async (req, res) => {
 };
 
 exports.getDegreeById = async (req, res) => {
+    let totalRecord = await DegreeModel.countDocuments({ isDeleted: false });
+    console.log(totalRecord)
     const id = req.params.id;
-    Degree.findById(id)
+    console.log(id)
+    DegreeModel.findById(id)
         .then((data) => {
             if (!data) {
                 return res.status(404).send({
                     status: false,
                     message: constants.NOT_FOUND,
+                    totalRecord: totalRecord
                 });
             } else {
-                let totalRecord = Degree.countDocuments({ isDeleted: false });
                 return res.status(200).send({
                     status: true,
                     message: constants.RECORD_FOUND,
-                    totalRecord,
-                });
+                    records: data,
+                    totalRecord: totalRecord
+                })
             }
         })
         .catch((err) => {
             console.log(err);
-            return res.status().send({
+            return res.status(500).send({
                 status: false,
                 message: err.message,
             });
@@ -67,6 +72,7 @@ exports.createDegree = async (req, res) => {
         !req.body.degreeTitle ||
         !req.body.dateTo ||
         !req.body.dateFrom ||
+        !req.body.uni ||
         !req.body.details
     ) {
         return res.status().send({
@@ -75,13 +81,14 @@ exports.createDegree = async (req, res) => {
         });
     }
     try {
-        const newDegree = new Degree({
+        const newDegree = new DegreeModel({
             _id: new mongoose.Types.ObjectId,
             degreeTitle: req.body.degreeTitle,
             dateTo: req.body.dateTo,
             dateFrom: req.body.dateFrom,
             details: req.body.details,
             isActive: req.body.isActive,
+            uni: req.body.uni
         })
         newDegree
             .save()
@@ -114,18 +121,19 @@ exports.updateDegree = async (req, res) => {
     console.log(id);
     try {
         if (
-            !!req.body.degreeTitle ||
+            !req.body.degreeTitle ||
             !req.body.dateTo ||
             !req.body.dateFrom ||
+            !req.body.uni ||
             !req.body.details
         ) {
             console.log("Required Field ....");
-            return res.status().send({
+            return res.status(300).send({
                 status: false,
                 message: constants.REQUIREDFIELDS,
             });
         } else {
-            Degree.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+            DegreeModel.findByIdAndUpdate(id, req.body, { useFindAndModify: true })
                 .then((data) => {
                     if (!data) {
                         return res.status(404).send({
@@ -159,7 +167,7 @@ exports.updateDegree = async (req, res) => {
 exports.deleteDegreeRecord = async (req, res) => {
     try {
         const id = req.params.id;
-        Degree.findByIdAndDelete(id)
+        DegreeModel.findByIdAndDelete(id)
             .then((data) => {
                 if (!data) {
                     res.status(404).send({

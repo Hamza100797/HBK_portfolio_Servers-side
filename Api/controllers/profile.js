@@ -1,29 +1,39 @@
 const constants = require('../constants/messages');
 const Profile = require('../Models/profiles');
 const saltRounds = 12;
+const bcrypt = require('bcrypt')
+const mongoose = require("mongoose")
+
 
 exports.getAllProfile = async (req, res) => {
+    const Profile_data = await Profile.find();
+    console.log(Profile_data)
     try {
-        const totalRecord = await Portfilio.countDocuments({ isDeleted: false });
-        const records = await Portfilio.find({ isDeleted: false })
-            .then((data) => {
-                return res.status(200).send({
-                    status: true,
-                    message: constants.RECORD_FOUND,
-                    records: data,
-                    totalRecord
-                })
-            }).catch((err) => {
-                return res.status(404).send({
-                    status: false,
-                    message: constants.NO_RECORD_FOUND,
-                    totalRecord
-                })
+        let totalRecord = await Profile.countDocuments({ isDeleted: false });
+        if (!totalRecord == 0) {
+            let Profile_data = await Profile.find({ isDeleted: false })
+                .sort({ _id: -1 })
+                .limit(parseInt(req.params.limit) || 10)
+                .skip(parseInt(req.params.offset) - 1)
+                .exec();
+            return res.status(200).send({
+                status: true,
+                message: constants.RETRIEVE_SUCCESS,
+                totalRecord,
+                Profile_data
             })
+        }
+        else {
+            return res.status(404).send({
+                status: false,
+                message: constants.NOT_FOUND
+            })
+        }
     } catch (error) {
-        return res.status(505).send({
+        console.log(error)
+        return res.status(500).send({
             status: false,
-            message: error.message
+            message: constants.SOMETHING_WENT_WRONG,
         })
     }
 }
@@ -56,18 +66,18 @@ exports.createNewProfile = async (req, res) => {
     if (!req.body.userName || !req.body.email || !req.body.password || !req.body.userRole) {
         return res.status(500).send({
             status: false,
-            message: constant.REQUIREDFIELDS
+            message: constants.REQUIREDFIELDS
         })
     }
     try {
         req.body.email = req.body.email.toLowerCase();
-        let getEmail = await User.findOne({ email: req.body.email });
+        let getEmail = await Profile.findOne({ email: req.body.email });
         if (getEmail) {
             return res
                 .status(400)
                 .send({
                     status: false,
-                    message: constant.ALREADY_REGISTERED
+                    message: constants.ALREADY_REGISTERED
                 })
 
         }
@@ -76,27 +86,27 @@ exports.createNewProfile = async (req, res) => {
                 if (err) {
                     return res.status(500).send({
                         error: err,
-                        message: constant.HASHING_PASSWORD
+                        message: constants.HASHING_PASSWORD
                     })
                 }
                 else {
-                    const newProfile = new User({
+                    const newProfile = new Profile({
                         _id: new mongoose.Types.ObjectId,
-                        firstName: req.body.firstName,
-                        lastName: req.body.lastName,
+                        userName: req.body.userName,
                         email: req.body.email,
                         password: hash,
-                        address: req.body.address,
+                        userRole: req.body.userRole,
+                        image: req.file.path
 
                     })
-                    console.log(`New User ${newUser}`)
+                    console.log(`New User Profile ${newProfile}`)
                     newProfile.save()
                         .then(result => {
                             console.log(`Data is adds successfully ${result}`)
                             res.status(200).send({
                                 status: true,
-                                newUser: result,
-                                message: constant.PROFILE_ADDED
+                                newProfile: result,
+                                message: constants.PROFILE_ADDED
                             })
                         })
                         .catch(err => {
@@ -104,7 +114,7 @@ exports.createNewProfile = async (req, res) => {
                             res.send({
                                 status: false,
                                 error: err,
-                                message: constant.NOT_ADDED
+                                message: constants.NOT_ADDED
                             })
                         })
                 }
@@ -123,10 +133,9 @@ exports.updateProfileUser = async (req, res) => {
     console.log(id);
     try {
         if (
-            !!req.body.userName ||
+            !req.body.userName ||
             !req.body.email ||
             !req.body.userRole ||
-            !req.body.details ||
             !req.body.isActive
         ) {
             console.log("Required Field ....");
@@ -135,7 +144,7 @@ exports.updateProfileUser = async (req, res) => {
                 message: constants.REQUIREDFIELDS,
             });
         } else {
-            Profile.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+            Profile.findByIdAndUpdate(id, req.body, { useFindAndModify: true })
                 .then((data) => {
                     if (!data) {
                         return res.status(404).send({
@@ -160,7 +169,7 @@ exports.updateProfileUser = async (req, res) => {
         }
     } catch (error) {
         console.log(`Error in Catch ${error}`);
-        return res.status().send({
+        return res.status(500).send({
             status: false,
             message: error.message,
         });

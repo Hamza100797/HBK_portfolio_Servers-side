@@ -11,4 +11,4 @@ const experienceDetailsSchema = new mongoose.Schema({
 },
     { timestamps: true, versionKey: false }
 );
-module.exports = mongoose.model('ExperienceDetails', experienceDetailsSchema)
+module.exports = mongoose.model('Experience', experienceDetailsSchema)

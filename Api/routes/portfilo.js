@@ -30,7 +30,7 @@ var multipleUpload = multer({ storage: storage }).array('files')
 
 
 router.get("/", function (req, res, next) {
-    res.send("respond with a resource Profile");
+    res.send("respond with a resource Portfolio");
 });
 
 router.get('/get/:limit/:offset', ((req, res) => {
@@ -39,12 +39,12 @@ router.get('/get/:limit/:offset', ((req, res) => {
 router.get('/get/:id', ((req, res) => {
     portfolioController.getById(req, res)
 }))
-router.post('/create', upload.single(""), ((req, res) => {
+router.post('/create', upload.single("projectImage"), ((req, res) => {
     portfolioController.createNew(req, res)
 }))
-router.patch('/update/:id', upload.single(""), ((req, res => {
+router.patch('/update/:id', upload.single("projectImage"), ((req, res) => {
     portfolioController.update(req, res)
-})))
+}))
 router.delete('/delete/:id', ((req, res) => {
     portfolioController.delete(req, res)
 }))

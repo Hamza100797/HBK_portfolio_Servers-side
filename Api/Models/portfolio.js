@@ -6,7 +6,7 @@ const portfolioSchema = new mongoose.Schema(
         projectTitle: { type: String, default: "", required: true },
         projectTagline: { type: String, default: "", required: true },
         url: { type: String, default: "", required: true },
-        publishDate: { type: Date, default: "", required: true },
+        publishDate: { type: String, default: "", required: true },
         projectCategory: {
             type: String,
             enum: [

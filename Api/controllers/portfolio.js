@@ -1,6 +1,6 @@
 const constants = require('../constants/messages');
 const Portfilio = require('../Models/portfolio')
-
+const mongoose = require('mongoose')
 
 exports.getAll = async (req, res) => {
     try {
@@ -31,6 +31,7 @@ exports.getById = async (req, res) => {
     try {
         const id = req.params.id
         Portfilio.findById(id)
+        console.log(Portfilio)
             .then((data) => {
                 return res.status(200).send({
                     status: true,
@@ -54,7 +55,8 @@ exports.getById = async (req, res) => {
 }
 exports.createNew = async (req, res) => {
     try {
-        if (!projectTagline || !url || !publishDate || !projectCategory || !aboutProject || !technologyUsed || !projectImage) {
+        if (!req.body.projectTagline || !req.body.url || !req.body.publishDate || !req.body.projectCategory || !req.body.aboutProject || !req.body.technologyUsed) {
+            console.log(req.body)
             return res.status(300).send({
                 status: false,
                 message: constants.REQUIREDFIELDS
@@ -62,6 +64,7 @@ exports.createNew = async (req, res) => {
         }
         else {
             const newPortfilio = new Portfilio({
+                _id: new mongoose.Types.ObjectId,
                 projectTitle: req.body.projectTitle,
                 projectTagline: req.body.projectTagline,
                 url: req.body.url,
@@ -84,6 +87,7 @@ exports.createNew = async (req, res) => {
                 })).catch((err => {
                     return res.status(301).send({
                         status: false,
+                        mess: err.message,
                         message: constants.NOT_ADDED_SUCCESS,
                     });
                 }))
@@ -96,54 +100,44 @@ exports.createNew = async (req, res) => {
     }
 }
 exports.update = async (req, res) => {
-    const id = req.params.id;
-    console.log(id);
+    let id = req.params.id;
+    console.log(id)
     try {
-        if (
-            !req.body.projectTitle ||
-            !req.body.projectTagline ||
-            !req.body.url ||
-            !req.body.publishDate ||
-            !req.body.projectCategory ||
-            !req.body.aboutProject ||
-            !req.body.technologyUsed ||
-            !req.body.projectImage
-        ) {
-            console.log("Required Field ....");
-            return res.status().send({
+        if (!req.body.projectTagline || !req.body.url || !req.body.publishDate || !req.body.projectCategory || !req.body.aboutProject || !req.body.technologyUsed) {
+            console.log('Something is missing');
+            return res.status(300).send({
                 status: false,
-                message: constants.REQUIREDFIELDS,
-            });
-        } else {
-            Portfilio.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+                message: constants.REQUIREDFIELDS
+            })
+        }
+        else {
+            Portfilio.findByIdAndUpdate(id, req.body, { useFindAndModify: true })
                 .then((data) => {
                     if (!data) {
                         return res.status(404).send({
                             status: false,
-                            message: constants.NO_RECORD_FOUND,
-                        });
+                            message: constants.NO_RECORD_FOUND
+                        })
                     } else {
                         return res.status(201).send({
-                            status: false,
+                            status: true,
                             message: constants.UPDATE_SUCCESS,
-                            data: data,
-                        });
+                            UpdatedRecord: data
+                        })
                     }
-                })
-                .catch((err) => {
-                    console.log(`Error in Promises ${err}`);
+                }).catch((err) => {
                     return res.status(500).send({
                         status: true,
                         message: constants.SERVER_ERROR,
                     });
-                });
+                })
         }
     } catch (error) {
-        console.log(`Error in Catch ${error}`);
+        console.log(error)
         return res.status(505).send({
             status: false,
-            message: error.message,
-        });
+            message: error.message
+        })
     }
 }
 exports.delete = async (req, res) => {

@@ -22,7 +22,7 @@ var multipleUpload = multer({ storage: storage }).array('files')
 
 
 router.get("/", function (req, res, next) {
-    res.send("respond with a resource Profile");
+    res.send("respond with a resource Service");
 });
 
 router.get('/get/:limit/:offset', ((req, res) => {
@@ -34,9 +34,9 @@ router.get('/get/:id', ((req, res) => {
 router.post('/create', upload.single('serviceIcon'), ((req, res) => {
     serviceController.createNew(req, res)
 }))
-router.patch('/update/:id', upload.single('serviceIcon'), ((req, res => {
+router.patch('/update/:id', upload.single('serviceIcon'), ((req, res) => {
     serviceController.update(req, res)
-})))
+}))
 router.delete('/delete/:id', ((req, res) => {
     serviceController.delete(req, res)
 }))

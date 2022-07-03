@@ -1,16 +1,14 @@
 const constants = require('../constants/messages');
-const Experience = require('../Models/experence')
 const mongoose = require('mongoose');
-
+const ExperienceModel = require('../Models/experence')
 
 exports.getAllRecord = async (req, res) => {
-
+    const experienceCount = await ExperienceModel.find().countDocuments();
+    console.log(experienceCount)
     try {
-        const Experience = await Experience.find()
-        if (Experience) {
-            console.log("Records Find in DB");
-            let totalRecord = await Experience.countDocuments({ isDeleted: false });
-            let ExperienceRecord = await Experience.find({ isDeleted: false })
+        if (!experienceCount == 0) {
+            let totalRecord = await ExperienceModel.countDocuments({ isDeleted: false });
+            let ExperienceRecords = await ExperienceModel.find({ isDeleted: false })
                 .sort({ _id: -1 })
                 .limit(parseInt(req.params.limit) || 10)
                 .skip(parseInt(req.params.offset) - 1)
@@ -18,44 +16,53 @@ exports.getAllRecord = async (req, res) => {
             return res.status(200).send({
                 status: true,
                 message: constants.RETRIEVE_SUCCESS,
-                data: ExperienceRecord,
-                totalRecord
+                totalRecord,
+                ExperienceRecords
             })
         }
         else {
             return res.status(404).send({
                 status: false,
-                message: constants.RETRIEVE_NOT_SUCCESS,
-                totalRecord
+                message: constants.NOT_FOUND
             })
         }
     } catch (error) {
-        console.log(error);
+        console.log(error)
         return res.status(500).send({
             status: false,
-            message: constants.SERVER_ERROR
-
+            message: constants.SOMETHING_WENT_WRONG,
         })
     }
 }
 exports.getRecordById = async (req, res) => {
-    const id = req.params.id
-    Experience.findById(id)
+    let totalRecord = await ExperienceModel.countDocuments({ isDeleted: false });
+    console.log(totalRecord)
+    const id = req.params.id;
+    console.log(id)
+    ExperienceModel.findById(id)
         .then((data) => {
             if (!data) {
                 return res.status(404).send({
                     status: false,
-                    message: constants.NOT_FOUND
+                    message: constants.NOT_FOUND,
+                    totalRecord: totalRecord
+                });
+            } else {
+                return res.status(200).send({
+                    status: true,
+                    message: constants.RECORD_FOUND,
+                    records: data,
+                    totalRecord: totalRecord
                 })
             }
-        }).catch((err) => {
-            let totalRecord = Experience.countDocuments({ isDeleted: false });
-            return res.status(200).send({
-                status: true,
-                message: constants.RECORD_FOUND,
-                totalRecord
-            })
         })
+        .catch((err) => {
+            console.log(err);
+            return res.status(500).send({
+                status: false,
+                message: err.message,
+            });
+        });
 }
 exports.createRecord = async (req, res) => {
     try {
@@ -67,7 +74,7 @@ exports.createRecord = async (req, res) => {
             })
         }
         else {
-            const NewExperience = new Experience({
+            const NewExperience = new ExperienceModel({
                 _id: new mongoose.Types.ObjectId,
                 companyName: req.body.companyName,
                 JobDescription: req.body.JobDescription,
@@ -86,7 +93,7 @@ exports.createRecord = async (req, res) => {
                 }).catch((err) => {
                     return res.status(500).send({
                         status: false,
-                        message: constantss.SERVER_ERROR,
+                        message: constants.SERVER_ERROR,
                         message2: err.message
                     })
                 })
@@ -102,20 +109,20 @@ exports.updateRecord = async (req, res) => {
     let id = req.params.id;
     console.log(id)
     try {
-        if (!companyName || !dateTo || !dateFrom || !JobDescription) {
+        if (!req.body.companyName || !req.body.dateTo || !req.body.dateFrom || !req.body.JobDescription) {
             console.log('Something is missing');
             return res.status(300).send({
                 status: false,
-                message: constantss.REQUIREDFIELDS
+                message: constants.REQUIREDFIELDS
             })
         }
         else {
-            Experience.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+            ExperienceModel.findByIdAndUpdate(id, req.body, { useFindAndModify: true })
                 .then((data) => {
                     if (!data) {
                         return res.status(404).send({
                             status: false,
-                            message: constantss.NO_RECORD_FOUND
+                            message: constants.NO_RECORD_FOUND
                         })
                     } else {
                         return res.status(201).send({
@@ -142,7 +149,7 @@ exports.updateRecord = async (req, res) => {
 exports.deleteRecord = async (req, res) => {
     try {
         const id = req.params.id;
-        Experience.findByIdAndDelete(id)
+        ExperienceModel.findByIdAndDelete(id)
             .then((data) => {
                 if (!data) {
                     return res.status(404).send({

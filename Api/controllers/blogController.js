@@ -1,10 +1,12 @@
 const Blog = require('../Models/blog')
 const constants = require('../constants/messages')
+const mongoose = require('mongoose')
 
 exports.getAll = async (req, res) => {
-    const students = await Blog.find();
+    const blogs = await Blog.find().countDocuments();
+    console.log(blogs)
     try {
-        if (!students) {
+        if (!blogs == 0) {
             let totalRecord = await Blog.countDocuments({ isDeleted: false });
             let blogs = await Blog.find({ isDeleted: false })
                 .sort({ _id: -1 })
@@ -13,7 +15,7 @@ exports.getAll = async (req, res) => {
                 .exec();
             return res.status(200).send({
                 status: true,
-                message: constant.RECORD_FOUND,
+                message: constants.RECORD_FOUND,
                 totalRecord,
                 blogs
             });
@@ -56,23 +58,46 @@ exports.getById = async (req, res) => {
         });
 }
 exports.createNew = async (req, res) => {
-    if (!req.body.blogTitle || !req.body.shortDescription || !req.body.DetailsDescription || !req.body.blogImage) {
-        return res.status(500).send({
-            status: false,
-            message: constants.REQUIREDFIELDS
-        })
-    }
     try {
-        if (!blog) {
-            return res.status(500).json({ status: false, message: constants.SERVER_ERROR });
+        if (!req.body.blogTitle || !req.body.blogCategory || !req.body.shortDescription
+            || !req.body.DetailsDescription) {
+            return res.status(300).send({
+                status: false,
+                message: constants.REQUIREDFIELDS
+            })
         }
         else {
-            return res.status(200).json({ message: constants.CREATE_BLOG });
+            const newBlog = new Blog({
+                _id: new mongoose.Types.ObjectId,
+                blogTitle: req.body.blogTitle,
+                postedDate: req.body.postedDate,
+                blogCategory: req.body.blogCategory,
+                shortDescription: req.body.shortDescription,
+                DetailsDescription: req.body.DetailsDescription,
+                isActive: req.body.isActive,
+                blogImage: req.file.path,
+            })
+            newBlog
+                .save()
+                .then((data => {
+                    console.log(data);
+                    return res.status(201).send({
+                        status: true,
+                        message: constants.CREATE_SUCCESS,
+                        data: data,
+                    });
+                })).catch((err => {
+                    return res.status(301).send({
+                        status: false,
+                        message: constants.NOT_ADDED_SUCCESS,
+                    });
+                }))
         }
-    }
-    catch (error) {
-        console.log('Error!', error);
-        return res.status(500).json({ status: false, message: error.message });
+    } catch (error) {
+        return res.status(505).send({
+            status: false,
+            message: error.message
+        })
     }
 }
 exports.update = async (req, res) => {
@@ -85,7 +110,7 @@ exports.update = async (req, res) => {
         }
         const id = req.params.id;
         console.log(id)
-        Blog.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+        Blog.findByIdAndUpdate(id, req.body, { useFindAndModify: true })
             .then(data => {
                 if (!data) {
                     res.status(404).send({

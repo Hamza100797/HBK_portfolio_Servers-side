@@ -1,28 +1,35 @@
 const constants = require('../constants/messages');
 const Service = require('../Models/newService');
-
+const mongoose = require('mongoose')
 exports.getAll = async (req, res) => {
+    const Profile_data = await Service.find();
+    console.log(Profile_data)
     try {
-        const totalRecord = await Service.countDocuments({ isDeleted: false });
-        const records = await Service.find({ isDeleted: false })
-            .then((data) => {
-                return res.status(200).send({
-                    status: true,
-                    message: constants.RECORD_FOUND,
-                    records: data,
-                    totalRecord
-                })
-            }).catch((err) => {
-                return res.status(404).send({
-                    status: false,
-                    message: constants.NO_RECORD_FOUND,
-                    totalRecord
-                })
+        let totalRecord = await Service.countDocuments({ isDeleted: false });
+        if (!totalRecord == 0) {
+            let Profile_data = await Service.find({ isDeleted: false })
+                .sort({ _id: -1 })
+                .limit(parseInt(req.params.limit) || 10)
+                .skip(parseInt(req.params.offset) - 1)
+                .exec();
+            return res.status(200).send({
+                status: true,
+                message: constants.RETRIEVE_SUCCESS,
+                totalRecord,
+                Profile_data
             })
+        }
+        else {
+            return res.status(404).send({
+                status: false,
+                message: constants.NOT_FOUND
+            })
+        }
     } catch (error) {
-        return res.status(505).send({
+        console.log(error)
+        return res.status(500).send({
             status: false,
-            message: error.message
+            message: constants.SOMETHING_WENT_WRONG,
         })
     }
 }
@@ -64,12 +71,14 @@ exports.createNew = async (req, res) => {
         });
     }
     try {
-        const newDegree = new Service({
-            _id: new mongoose.Types.ObjectId,
-            serviceTitle: req.body.serviceTitle,
-            serviceDescription: req.body.serviceDescription,
-            isActive: req.body.isActive,
-        });
+        const newService
+            = new Service({
+                _id: new mongoose.Types.ObjectId,
+                serviceTitle: req.body.serviceTitle,
+                serviceDescription: req.body.serviceDescription,
+                serviceIcon: req.body.serviceIcon,
+                isActive: req.body.isActive,
+            });
         newService
             .save()
             .then((data) => {
@@ -103,15 +112,16 @@ exports.update = async (req, res) => {
             !req.body.serviceTitle ||
             !req.body.serviceDescription ||
             !req.body.serviceIcon ||
-            !req.body.isActive
+            !req.body.isActive == ""
         ) {
+            console.log(req.body)
             console.log("Required Field ....");
             return res.status(303).send({
                 status: false,
                 message: constants.REQUIREDFIELDS,
             });
         } else {
-            Degree.findByIdAndUpdate(id, req.body, { useFindAndModify: false })
+            Service.findByIdAndUpdate(id, req.body, { useFindAndModify: true })
                 .then((data) => {
                     if (!data) {
                         return res.status(404).send({
@@ -145,7 +155,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         const id = req.params.id;
-        Experience.findByIdAndDelete(id)
+        Service.findByIdAndDelete(id)
             .then((data) => {
                 if (!data) {
                     return res.status(404).send({

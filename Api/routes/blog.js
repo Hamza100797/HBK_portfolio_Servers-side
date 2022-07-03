@@ -41,10 +41,10 @@ router.get('/get/:limit/:offset', (req, res) => {
 router.get('/get/:id', (req, res) => {
     BlogController.getById(req, res)
 })
-router.post('/create', upload.single(''), (req, res) => {
+router.post('/create', upload.single('blogImage'), (req, res) => {
     BlogController.createNew(req, res)
 })
-router.patch('/update/:id', upload.single(''), (req, res) => {
+router.patch('/update/:id', upload.single('blogImage'), (req, res) => {
     BlogController.update(req, res)
 })
 router.delete('/delete/:id', (req, res) => {
