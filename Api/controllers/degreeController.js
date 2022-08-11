@@ -142,7 +142,7 @@ exports.updateDegree = async (req, res) => {
                         });
                     } else {
                         return res.status(201).send({
-                            status: false,
+                            status: true,
                             message: constants.UPDATE_SUCCESS,
                             data: data,
                         });
@@ -175,8 +175,8 @@ exports.deleteDegreeRecord = async (req, res) => {
                         message: constants.NO_RECORD_FOUND,
                     });
                 } else {
-                    res.status().send({
-                        status: false,
+                    res.status(201).send({
+                        status: true,
                         message: constants.DELETED_SUCCESS,
                     });
                 }

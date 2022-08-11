@@ -1,6 +1,8 @@
 const constants = require('../constants/messages');
 const Portfilio = require('../Models/portfolio')
 const mongoose = require('mongoose')
+const fs = require('file-system');
+
 
 exports.getAll = async (req, res) => {
     try {
@@ -55,6 +57,27 @@ exports.getById = async (req, res) => {
 }
 exports.createNew = async (req, res) => {
     try {
+        if (!req.file) {
+            res.status(500).send({
+                status: false,
+                message: "Please Select File"
+            })
+        }
+        else if (req.file) {
+            var img = fs.readFileSync(req.file.path);
+            var encode_image = img.toString('base64');
+            var portfolioThumbnail = {
+                contentType: req.file.mimetype,
+                image: Buffer.from(encode_image, 'base64')
+            };
+        }
+        else {
+            return res.status().send({
+                status: false,
+                message: "Something Went Wrong with File"
+            })
+        }
+
         if (!req.body.projectTagline || !req.body.url || !req.body.publishDate || !req.body.projectCategory || !req.body.aboutProject || !req.body.technologyUsed) {
             console.log(req.body)
             return res.status(300).send({
@@ -62,6 +85,7 @@ exports.createNew = async (req, res) => {
                 message: constants.REQUIREDFIELDS
             })
         }
+
         else {
             const newPortfilio = new Portfilio({
                 _id: new mongoose.Types.ObjectId,
@@ -72,7 +96,7 @@ exports.createNew = async (req, res) => {
                 projectCategory: req.body.projectCategory,
                 aboutProject: req.body.aboutProject,
                 technologyUsed: req.body.technologyUsed,
-                projectImage: req.file.path,
+                projectImage: portfolioThumbnail,
                 isActive: req.body.isActive
             })
             newPortfilio
@@ -159,7 +183,7 @@ exports.delete = async (req, res) => {
                     })
                 }
             }).catch(err => {
-                return res.status().send({
+                return res.status(500).send({
                     status: false,
                     message: constants.SERVER_ERROR
                 })

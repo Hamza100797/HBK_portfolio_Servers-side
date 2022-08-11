@@ -4,6 +4,10 @@ const saltRounds = 12;
 const bcrypt = require('bcrypt')
 const mongoose = require("mongoose")
 
+const fs = require('file-system');
+
+
+
 
 exports.getAllProfile = async (req, res) => {
     const Profile_data = await Profile.find();
@@ -16,6 +20,7 @@ exports.getAllProfile = async (req, res) => {
                 .limit(parseInt(req.params.limit) || 10)
                 .skip(parseInt(req.params.offset) - 1)
                 .exec();
+
             return res.status(200).send({
                 status: true,
                 message: constants.RETRIEVE_SUCCESS,
@@ -74,7 +79,7 @@ exports.createNewProfile = async (req, res) => {
         let getEmail = await Profile.findOne({ email: req.body.email });
         if (getEmail) {
             return res
-                .status(400)
+                .status(406)
                 .send({
                     status: false,
                     message: constants.ALREADY_REGISTERED
@@ -90,13 +95,30 @@ exports.createNewProfile = async (req, res) => {
                     })
                 }
                 else {
+                    if (!req.file) {
+
+                        return res.status(500).send({
+                            status: false,
+                            message: "Please Upload File"
+                        })
+
+                    }
+                    if (req.file) {
+                        var img = fs.readFileSync(req.file.path);
+                        var encode_image = img.toString('base64');
+                        var finalImg = {
+                            contentType: req.file.mimetype,
+                            image: Buffer.from(encode_image, 'base64')
+                        };
+                    }
+
                     const newProfile = new Profile({
                         _id: new mongoose.Types.ObjectId,
                         userName: req.body.userName,
                         email: req.body.email,
                         password: hash,
                         userRole: req.body.userRole,
-                        image: req.file.path
+                        image: finalImg
 
                     })
                     console.log(`New User Profile ${newProfile}`)
@@ -132,14 +154,9 @@ exports.updateProfileUser = async (req, res) => {
     const id = req.params.id;
     console.log(id);
     try {
-        if (
-            !req.body.userName ||
-            !req.body.email ||
-            !req.body.userRole ||
-            !req.body.isActive
-        ) {
+        if (!req.body) {
             console.log("Required Field ....");
-            return res.status().send({
+            return res.status(402).send({
                 status: false,
                 message: constants.REQUIREDFIELDS,
             });
@@ -153,7 +170,7 @@ exports.updateProfileUser = async (req, res) => {
                         });
                     } else {
                         return res.status(201).send({
-                            status: false,
+                            status: true,
                             message: constants.UPDATE_SUCCESS,
                             data: data,
                         });

@@ -18,7 +18,7 @@ const blogSchema = new mongoose.Schema(
         shortDescription: { type: String, required: true },
         DetailsDescription: { type: String, required: true },
         isActive: { type: String, required: true, default: true },
-        blogImage: { type: String, required: true },
+        blogImage: { type: mongoose.Schema.Types.Mixed, required: true },
     },
     { timestamps: true, versionKey: false }
 );

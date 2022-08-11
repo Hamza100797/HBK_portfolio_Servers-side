@@ -7,7 +7,7 @@ const userProfileSchema = new mongoose.Schema({
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     userRole: { type: String, enum: ['blogger', 'author', 'organizer'], required: true },
-    image: { type: String, required: true },
+    image: { type: mongoose.Schema.Types.Mixed, required: true },
     isActive: { type: Boolean, default: true, required: true },
 },
     { timestamps: true, versionKey: false }

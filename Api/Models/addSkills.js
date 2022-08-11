@@ -3,9 +3,9 @@ const mongoose = require("mongoose");
 const addSkillsSchema = new mongoose.Schema(
     {
         _id: mongoose.Types.ObjectId,
-        skillsTitle: { type: String, default: "", required: true },
-        skillsValue: { type: String, unique: true, required: true },
-        skillsCategory: {
+        skillTitle: { type: String, default: "", required: true },
+        skillValue: { type: String, required: true },
+        skillCategory: {
             type: String,
             enum: ["webDesign", "frontEnd", "backEnd", "tools"],
         },

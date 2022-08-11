@@ -25,6 +25,7 @@ router.get('/getprofileUsers/:limit/:offset', (req, res) => {
     profileUserController.getAllProfile(req, res)
 })
 router.get('/getProfileUser/:id', (req, res) => {
+
     profileUserController.getProfileUserById(req, res)
 })
 router.post('/newProfileUser', upload.single('image'), (req, res) => {

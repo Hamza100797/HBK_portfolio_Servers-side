@@ -9,16 +9,11 @@ exports.getCareerObj = async (req, res) => {
     console.log(careerObj)
     try {
         if (careerObj) {
-            let totalRecord = await Career_Obj.countDocuments({ isDeleted: false });
-            let careerObj = await Career_Obj.find({ isDeleted: false })
-                .sort({ _id: -1 })
-                .limit(parseInt(req.params.limit) || 10)
-                .skip(parseInt(req.params.offset) - 1)
-                .exec();
+
             return res.status(200).send({
                 status: true,
                 message: constants.RETRIEVE_SUCCESS,
-                totalRecord,
+
                 careerObj
             })
         }

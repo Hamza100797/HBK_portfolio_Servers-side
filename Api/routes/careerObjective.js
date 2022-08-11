@@ -6,7 +6,7 @@ router.get("/", function (req, res, next) {
     res.send("respond with a resource Career objective");
 });
 
-router.get('/get/:limit/:offset', ((req, res) => {
+router.get('/get', ((req, res) => {
     carrerObjController.getCareerObj(req, res)
 }))
 

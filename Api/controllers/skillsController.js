@@ -51,12 +51,12 @@ exports.getById = async (req, res) => {
 }
 exports.createNew = async (req, res) => {
     if (
-        !req.body.skillsTitle ||
-        !req.body.skillsValue ||
-        !req.body.skillsCategory ||
-        !req.body.isActive
+        !req.body.skillTitle ||
+        !req.body.skillValue ||
+        !req.body.skillCategory
+
     ) {
-        return res.status().send({
+        return res.status(300).send({
             status: false,
             message: constants.REQUIREDFIELDS,
         });
@@ -64,9 +64,9 @@ exports.createNew = async (req, res) => {
     try {
         const newSkill = new Skill({
             _id: new mongoose.Types.ObjectId,
-            skillsTitle: req.body.skillsTitle,
-            skillsValue: req.body.skillsValue,
-            skillsCategory: req.body.skillsCategory,
+            skillTitle: req.body.skillTitle,
+            skillValue: req.body.skillValue,
+            skillCategory: req.body.skillCategory,
             isActive: req.body.isActive,
         });
         newSkill
@@ -99,9 +99,7 @@ exports.update = async (req, res) => {
     console.log(id);
     try {
         if (
-            !req.body.skillsTitle ||
-            !req.body.skillsValue ||
-            !req.body.skillsCategory
+            !req.body
         ) {
             console.log("Required Field ....");
             return res.status(303).send({
@@ -118,7 +116,7 @@ exports.update = async (req, res) => {
                         });
                     } else {
                         return res.status(201).send({
-                            status: false,
+                            status: true,
                             message: constants.UPDATE_SUCCESS,
                             data: data,
                         });
@@ -152,7 +150,7 @@ exports.delete = async (req, res) => {
                     })
                 }
                 else {
-                    res.status().send({
+                    res.status(201).send({
                         status: true,
                         message: constants.RECORD_DELETED,
 

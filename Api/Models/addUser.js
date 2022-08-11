@@ -7,7 +7,7 @@ const dashboardUsers = new mongoose.Schema({
     email: { type: String, unique: true, required: true },
     userRole: { type: String, enum: ["blogger", "author", "organization"] },
     password: { type: String, required: true },
-    image: { type: String, default: "", required: true },
+    image: { type: mongoose.Schema.Types.Mixed, required: true },
     isActive: { type: Boolean, default: true, required: true },
 },
     { timestamps: true, versionKey: false }

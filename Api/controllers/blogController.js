@@ -1,6 +1,8 @@
 const Blog = require('../Models/blog')
 const constants = require('../constants/messages')
 const mongoose = require('mongoose')
+const fs = require('file-system');
+
 
 exports.getAll = async (req, res) => {
     const blogs = await Blog.find().countDocuments();
@@ -58,6 +60,27 @@ exports.getById = async (req, res) => {
         });
 }
 exports.createNew = async (req, res) => {
+    if (!req.file) {
+        res.status(500).send({
+            status: false,
+            message: "Please select file"
+        })
+    }
+    else if (req.file) {
+        var img = fs.readFileSync(req.file.path);
+        var encode_image = img.toString('base64');
+        var blogThumbnail = {
+            contentType: req.file.mimetype,
+            image: Buffer.from(encode_image, 'base64')
+        };
+    }
+    else {
+        return res.send(500).send({
+            status: false,
+            message: "Something wrong with file"
+        })
+    }
+
     try {
         if (!req.body.blogTitle || !req.body.blogCategory || !req.body.shortDescription
             || !req.body.DetailsDescription) {
@@ -66,6 +89,7 @@ exports.createNew = async (req, res) => {
                 message: constants.REQUIREDFIELDS
             })
         }
+
         else {
             const newBlog = new Blog({
                 _id: new mongoose.Types.ObjectId,
@@ -75,7 +99,7 @@ exports.createNew = async (req, res) => {
                 shortDescription: req.body.shortDescription,
                 DetailsDescription: req.body.DetailsDescription,
                 isActive: req.body.isActive,
-                blogImage: req.file.path,
+                blogImage: blogThumbnail,
             })
             newBlog
                 .save()

@@ -11,7 +11,8 @@ const portfolioSchema = new mongoose.Schema(
             type: String,
             enum: [
                 "webDesigning",
-                "frontEnd",
+                "webDev",
+                "AppDev",
                 "backEnd",
                 "smartContract",
                 "blockChainApplication",
@@ -19,7 +20,7 @@ const portfolioSchema = new mongoose.Schema(
         },
         aboutProject: { type: String, required: true },
         technologyUsed: { type: String, required: true },
-        projectImage: { type: String, required: true },
+        projectImage: { type: mongoose.Schema.Types.Mixed, required: true },
         isActive: { type: Boolean, default: true, required: true },
     },
     { timestamps: true, versionKey: false }

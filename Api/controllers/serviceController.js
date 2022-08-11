@@ -1,13 +1,15 @@
 const constants = require('../constants/messages');
 const Service = require('../Models/newService');
 const mongoose = require('mongoose')
+const fs = require('file-system');
+
 exports.getAll = async (req, res) => {
-    const Profile_data = await Service.find();
-    console.log(Profile_data)
+    const service_Data = await Service.find();
+    console.log(service_Data)
     try {
         let totalRecord = await Service.countDocuments({ isDeleted: false });
         if (!totalRecord == 0) {
-            let Profile_data = await Service.find({ isDeleted: false })
+            let service_Data = await Service.find({ isDeleted: false })
                 .sort({ _id: -1 })
                 .limit(parseInt(req.params.limit) || 10)
                 .skip(parseInt(req.params.offset) - 1)
@@ -16,7 +18,7 @@ exports.getAll = async (req, res) => {
                 status: true,
                 message: constants.RETRIEVE_SUCCESS,
                 totalRecord,
-                Profile_data
+                service_Data
             })
         }
         else {
@@ -59,24 +61,45 @@ exports.getById = async (req, res) => {
     }
 }
 exports.createNew = async (req, res) => {
-    if (
-        !req.body.serviceTitle ||
-        !req.body.serviceDescription ||
-        !req.body.serviceIcon ||
-        !req.body.isActive
-    ) {
-        return res.status().send({
-            status: false,
-            message: constants.REQUIREDFIELDS,
-        });
-    }
+
     try {
+        if (!req.file) {
+            res.status(403).send({
+                status: false,
+                message: "Please Select File"
+            })
+        }
+        else if (req.file) {
+            var img = fs.readFileSync(req.file.path);
+            var encode_image = img.toString('base64');
+            var serviceIconThumbnail = {
+                contentType: req.file.mimetype,
+                image: Buffer.from(encode_image, 'base64')
+            };
+        }
+        else
+            res.status(500).send({
+                status: false,
+                message: "Something went wrong getting file"
+            })
+
+        if (
+            !req.body.serviceTitle ||
+            !req.body.serviceDescription
+
+        ) {
+            return res.status(403).send({
+                status: false,
+                message: constants.REQUIREDFIELDS,
+            });
+        }
+
         const newService
             = new Service({
                 _id: new mongoose.Types.ObjectId,
                 serviceTitle: req.body.serviceTitle,
                 serviceDescription: req.body.serviceDescription,
-                serviceIcon: req.body.serviceIcon,
+                serviceIcon: serviceIconThumbnail,
                 isActive: req.body.isActive,
             });
         newService
@@ -109,10 +132,8 @@ exports.update = async (req, res) => {
     console.log(id);
     try {
         if (
-            !req.body.serviceTitle ||
-            !req.body.serviceDescription ||
-            !req.body.serviceIcon ||
-            !req.body.isActive == ""
+            !req.body
+
         ) {
             console.log(req.body)
             console.log("Required Field ....");
@@ -130,7 +151,7 @@ exports.update = async (req, res) => {
                         });
                     } else {
                         return res.status(201).send({
-                            status: false,
+                            status: true,
                             message: constants.UPDATE_SUCCESS,
                             data: data,
                         });
@@ -155,6 +176,7 @@ exports.update = async (req, res) => {
 exports.delete = async (req, res) => {
     try {
         const id = req.params.id;
+        console.log(id)
         Service.findByIdAndDelete(id)
             .then((data) => {
                 if (!data) {
@@ -164,7 +186,7 @@ exports.delete = async (req, res) => {
                     })
                 }
                 else {
-                    res.status().send({
+                    res.status(201).send({
                         status: true,
                         message: constants.RECORD_DELETED,
 

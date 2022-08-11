@@ -19,6 +19,7 @@ dotenv.config()
 const path = require('path');
 
 
+
 ///... Upload Folder for Multer 
 app.use(express.static(path.join(__dirname + "/uploads")))
 
@@ -43,6 +44,12 @@ app.use(bodyParser.json());
 app.use(cors());
 app.use(cors({ origin: true, credentials: true }));
 
+app.use((req, res, next) => {
+    res.header("Access-Control-Allow-Origin", "*");
+    res.header("Access-Control-Allow-Headers", "X-Requested-With");
+    next()
+})
+
 
 //Routes
 app.use('/app/v1/health', (req, res) => {
@@ -59,21 +66,25 @@ app.use('/app/v1/service', Service);
 app.use('/app/v1/skills', Skills);
 //......... connect MongoDB ......//
 
-const URL = `mongodb+srv://hbk1007:ifO8AdIR4si0RjnH@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`
 
-mongoose.connect(URL, {
-    useNewUrlParser: true,
-    useUnifiedTopology: true,
+// live DB 
+// const URL = `mongodb+srv://hbk1007:ifO8AdIR4si0RjnH@hbkportfolio.fpcmyzx.mongodb.net/?retryWrites=true&w=majority`
+// mongoose.connect(URL, {
+//     useNewUrlParser: true,
+//     useUnifiedTopology: true,
 
-})
-    .then(() => {
-        console.log('MongoDB Connected…')
-    })
-    .catch((err) => {
-        console.log(err)
-        console.log(constant.DataBaseError)
-    })
+// })
+//     .then(() => {
+//         console.log('MongoDB Connected…')
+//     })
+//     .catch((err) => {
+//         console.log(err)
+//         console.log(constant.DataBaseError)
+//     })
 //......... connect MongoDB ......//
+
+// Offline DB 
+
 
 
 //......Error Handling Bad Request .....//
@@ -83,6 +94,16 @@ app.use((req, res, next) => {
         "message": constant.BAD_REQUEST
     })
 })
+// *******LocalDB*********//
+var db = "mongodb://localhost:27017/HBK-PORTFILO";
+mongoose.connect(db, { useNewUrlParser: true, useUnifiedTopology: true });
+
+const conSuccess = mongoose.connection
+conSuccess.once('open', _ => {
+    console.log('Database connected:', db)
+})
+// *******LocalDB*********//
+
 
 app.listen(PORT, () => {
     console.log(`App is running on http://localhost:${PORT}`)
