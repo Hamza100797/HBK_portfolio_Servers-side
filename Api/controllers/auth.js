@@ -42,6 +42,7 @@ exports.registerUser = async (req, res) => {
                         email: req.body.email,
                         password: hash,
                         address: req.body.address,
+                        checkTOC: req.body.checkTOC
 
                     })
                     console.log(`New User ${newUser}`)

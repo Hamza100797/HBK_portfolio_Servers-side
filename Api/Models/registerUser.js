@@ -8,7 +8,7 @@ const RegisterUsersSchema = new mongoose.Schema({
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
     address: { type: String, default: "", required: true },
-    checkTOC: { type: Boolean, default: false, required: true },
+    checkTOC: { type: Boolean, default: true, required: true },
 },
     { timestamps: true, versionKey: false }
 );

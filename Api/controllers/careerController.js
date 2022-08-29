@@ -79,7 +79,8 @@ exports.updateCareerObj = async (req, res) => {
             })
         }
         else {
-            const id = req.params.id
+            // const id = req.params.id
+            const id = "62b829cfc9e0d0602addd2b6";
             console.log(id)
             Career_Obj.findByIdAndUpdate(id, req.body, { useFindAndModify: true })
                 .then(data => {
