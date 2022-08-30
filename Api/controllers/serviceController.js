@@ -5,7 +5,7 @@ const fs = require('file-system');
 
 exports.getAll = async (req, res) => {
     const service_Data = await Service.find();
-    console.log(service_Data)
+    // console.log(service_Data)
     try {
         let totalRecord = await Service.countDocuments({ isDeleted: false });
         if (!totalRecord == 0) {
@@ -105,7 +105,7 @@ exports.createNew = async (req, res) => {
         newService
             .save()
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 return res.status(201).send({
                     status: true,
                     message: constants.CREATE_SUCCESS,
@@ -113,7 +113,7 @@ exports.createNew = async (req, res) => {
                 });
             })
             .catch((err) => {
-                console.log(err);
+                // console.log(err);
                 return res.status(301).send({
                     status: false,
                     message: constants.NOT_ADDED_SUCCESS,
@@ -129,14 +129,14 @@ exports.createNew = async (req, res) => {
 }
 exports.update = async (req, res) => {
     const id = req.params.id;
-    console.log(id);
+    // console.log(id);
     try {
         if (
             !req.body
 
         ) {
-            console.log(req.body)
-            console.log("Required Field ....");
+            // console.log(req.body)
+            // console.log("Required Field ....");
             return res.status(303).send({
                 status: false,
                 message: constants.REQUIREDFIELDS,
@@ -199,7 +199,7 @@ exports.delete = async (req, res) => {
                 })
             })
     } catch (error) {
-        console.log(error)
+        // console.log(error)
         return res.status(500).send({
             status: false,
             message: constants.SERVER_ERROR,

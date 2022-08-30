@@ -15,8 +15,8 @@ module.exports = Object.freeze({
     SERVER_ERROR: "Error in Server",
     CREATE_BLOG: "Blog Create Successfully",
     SOMETHING_WENT_WRONG: "Something went wrong",
-    RETRIEVE_SUCCESS: "Retrieve successfully",
-    RETRIEVE_NOT_SUCCESS: "Not retrieve successfully",
+    Fetch_SUCCESS: "Fetch successfully",
+    Fetch_NOT_SUCCESS: "Not Fetch successfully",
     NO_RECORD_FOUND: "No record found",
     UPDATE_SUCCESS: "Update Successfully",
     ERROR_UPDATE: "Error While updating",
@@ -33,6 +33,9 @@ module.exports = Object.freeze({
     ADD_EXPERIENCE: "Experience added Successfully",
     HASHING_PASSWORD: "Error While Hashing password",
     PROFILE_ADDED: "Profile added successfully",
-    NOT_ADDED: "Error in adding Profile"
+    NOT_ADDED: "Error in adding Profile",
+    FETCHERROR: "Error While Fetching Records",
+    Testimonilas: "Testimonial Added Successfully"
+
 
 })

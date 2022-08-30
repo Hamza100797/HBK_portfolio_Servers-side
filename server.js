@@ -16,6 +16,7 @@ const Portfolio = require('./Api/routes/portfilo')
 const Skills = require('./Api/routes/skills')
 const Service = require('./Api/routes/service')
 const Auth = require('./Api/routes/userAuth')
+const Testimonials = require('./Api/routes/testimonials')
 dotenv.config()
 const path = require('path');
 
@@ -66,6 +67,7 @@ app.use('/app/v1/portfolio', Portfolio);
 app.use('/app/v1/service', Service);
 app.use('/app/v1/skills', Skills);
 app.use('/app/v1/auth', Auth)
+app.use('/app/v1/testimonials', Testimonials)
 //......... connect MongoDB ......//
 
 

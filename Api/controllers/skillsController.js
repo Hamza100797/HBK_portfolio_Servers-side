@@ -72,7 +72,7 @@ exports.createNew = async (req, res) => {
         newSkill
             .save()
             .then((data) => {
-                console.log(data);
+                // console.log(data);
                 return res.status(201).send({
                     status: true,
                     message: constants.CREATE_SUCCESS,

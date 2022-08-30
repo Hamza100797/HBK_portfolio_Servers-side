@@ -11,7 +11,7 @@ const fs = require('file-system');
 
 exports.getAllProfile = async (req, res) => {
     const Profile_data = await Profile.find();
-    console.log(Profile_data)
+    // console.log(Profile_data)
     try {
         let totalRecord = await Profile.countDocuments({ isDeleted: false });
         if (!totalRecord == 0) {
