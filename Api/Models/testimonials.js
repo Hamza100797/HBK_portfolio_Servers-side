@@ -4,7 +4,7 @@ const mongoose = require('mongoose');
 const TestimonialSchema = new mongoose.Schema({
     _id: mongoose.Types.ObjectId,
     clientName: { type: String, required: true },
-    message: { type: String, required: true },
+    clientReviews: { type: String, required: true },
     companyName: { type: String },
     designation: { type: String },
     image: { type: mongoose.Schema.Types.Mixed, required: true },

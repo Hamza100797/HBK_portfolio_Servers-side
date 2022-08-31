@@ -13,7 +13,8 @@ exports.getAll = async (req, res) => {
                     status: true,
                     isSuccess: true,
                     message: constants.Fetch_SUCCESS,
-                    records: data
+                    records: data,
+                    totalRecords: totalRecords
                 })
             })
             .catch((err) => {
@@ -71,7 +72,7 @@ exports.createNew = async (req, res) => {
 
     try {
         console.log(req.body.image)
-        if (!req.body.clientName || !req.body.message || !req.body.designation) {
+        if (!req.body.clientName || !req.body.clientReviews || !req.body.designation) {
             return res.status(500).send({
                 status: false,
                 message: constants.REQUIREDFIELDS
@@ -97,7 +98,7 @@ exports.createNew = async (req, res) => {
         const newTestimonials = new Testimonial({
             _id: new mongoose.Types.ObjectId,
             clientName: req.body.clientName,
-            message: req.body.message,
+            clientReviews: req.body.clientReviews,
             companyName: req.body.companyName,
             designation: req.body.designation,
             image: finalImg
@@ -137,7 +138,7 @@ exports.update = async (req, res) => {
     let id = req.params.id;
     console.log(id)
     try {
-        if (!req.body.clientName || !req.body.message || !req.body.designation) {
+        if (!req.body.clientName || !req.body.clientReviews || !req.body.designation) {
             console.log('Something is missing');
             return res.status(400).send({
                 status: false,
