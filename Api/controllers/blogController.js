@@ -38,6 +38,7 @@ exports.getAll = async (req, res) => {
     }
 }
 exports.getById = async (req, res) => {
+    debugger
     const id = req.params.id;
     Blog.findById(id)
         .then(data => {
@@ -94,11 +95,9 @@ exports.createNew = async (req, res) => {
             const newBlog = new Blog({
                 _id: new mongoose.Types.ObjectId,
                 blogTitle: req.body.blogTitle,
-                postedDate: req.body.postedDate,
                 blogCategory: req.body.blogCategory,
                 shortDescription: req.body.shortDescription,
                 DetailsDescription: req.body.DetailsDescription,
-                isActive: req.body.isActive,
                 blogImage: blogThumbnail,
             })
             newBlog
@@ -112,6 +111,7 @@ exports.createNew = async (req, res) => {
                     });
                 })).catch((err => {
                     return res.status(301).send({
+                        error: err,
                         status: false,
                         message: constants.NOT_ADDED_SUCCESS,
                     });

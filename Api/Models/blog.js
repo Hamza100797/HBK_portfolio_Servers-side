@@ -13,6 +13,7 @@ const blogSchema = new mongoose.Schema(
                 "Smart Contract",
                 "Block-chain",
                 "App-Development",
+                "MetaVerse",
             ],
         },
         shortDescription: { type: String, required: true },
